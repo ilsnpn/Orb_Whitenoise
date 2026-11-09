@@ -1,0 +1,122 @@
+/* Écran d'écoute de la v2 : noir pur, blanc pur. Le panneau latéral vit dans sidepanel.css. */
+
+/* ───────── téléphone : colonne ───────── */
+.pr-screen.pr-l { gap: 22px; padding-top: 16px; justify-content: flex-start; }
+
+/* contenu du panneau (ordinateur) */
+
+/* Le panneau se répartit sur la hauteur disponible :
+   - en haut les ambiances (collées en haut), en bas les liens (collés en bas) ;
+   - au milieu, chaque bloc reçoit sa part de la place restante et son contenu s'y centre,
+     avec un filet blanc au-dessus : les espaces de part et d'autre de chaque filet sont égaux. */
+.pr-pn-top { flex: none; padding-bottom: 22px; }
+.pr-pn-mid { flex: 1 0 auto; display: flex; flex-direction: column; }
+.pr-pn-mid .pr-sec {
+  flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 18px;
+  padding: 22px 0; border-top: 1px solid var(--pr-rule);
+}
+.pr-pn-bot { flex: none; padding-top: 26px; border-top: 1px solid var(--pr-rule); }
+
+/* l'orbe : présence centrale */
+.pr-l-stage { display: flex; justify-content: center; }
+.pr-screen.pr-l .pr-l-stage { margin: 0 calc(-1 * var(--pr-gutter)); }
+.pr-l-orb {
+  position: relative; display: grid; place-items: center;
+  background: none; border: 0; padding: 0; color: inherit; cursor: pointer; border-radius: 50%;
+}
+.pr-l-orb:focus-visible { outline: 2px solid var(--pr-line); outline-offset: -8px; }
+/* lecture : l'orbe est pleinement blanche ; en pause, c'est le seul élément grisé (50 % de transparence) */
+.pr-l-orb canvas { transition: opacity 0.45s ease; }
+.pr-l-orb[data-playing='false'] canvas { opacity: 0.5; }
+.pr-l-orb[data-playing='false']:hover canvas { opacity: 0.7; }
+
+.pr-l-row { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; font-size: 14px; }
+.pr-l-row input[type='range'], .pr-m-field input[type='range'] { width: 100%; accent-color: #fff; }
+
+/* interrupteur noir et blanc, façon iPhone */
+.pr-l-switch {
+  position: relative; display: grid; grid-template-columns: auto 1fr auto;
+  align-items: center; gap: 14px; font-size: 14px; cursor: pointer;
+}
+.pr-l-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.pr-l-switch-track {
+  position: relative; width: 44px; height: 26px; border-radius: 13px;
+  border: 1px solid var(--pr-line); background: var(--pr-bg); transition: background 0.25s;
+}
+.pr-l-switch-track::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--pr-ink); transition: transform 0.25s, background 0.25s;
+}
+.pr-l-switch input:checked + .pr-l-switch-track { background: var(--pr-ink); }
+.pr-l-switch input:checked + .pr-l-switch-track::after { transform: translateX(18px); background: var(--pr-bg); }
+.pr-l-switch input:focus-visible + .pr-l-switch-track { outline: 2px solid var(--pr-line); outline-offset: 3px; }
+
+/* frise de la journée */
+.pr-day { margin: 0; display: grid; gap: 6px; color: var(--pr-ink); }
+.pr-day-chart { position: relative; height: 92px; }
+.pr-day-chart > svg { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 54px; }
+.pr-day-slots { position: absolute; left: 0; right: 0; bottom: 0; height: 34px; }
+.pr-day-slot {
+  position: absolute; top: 0; bottom: 0;
+  display: grid; place-items: center;
+  border-left: 1px solid var(--pr-rule);
+  transition: background 0.3s, color 0.3s;
+}
+.pr-day-slot:first-child { border-left: 0; }
+.pr-day-slot.is-now { background: var(--pr-ink); color: var(--pr-bg); border-radius: 6px; }
+.pr-day-now { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px solid var(--pr-ink); }
+.pr-day-now::after {
+  content: ''; position: absolute; bottom: -3px; left: -4px; width: 7px; height: 7px; border-radius: 50%; background: var(--pr-ink);
+}
+.pr-day-now span { position: absolute; top: -2px; left: 6px; font-size: 10px; font-weight: 600; background: var(--pr-bg); padding: 0 3px; white-space: nowrap; }
+.pr-day-ticks { position: relative; height: 12px; font-size: 9px; }
+.pr-day-ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.pr-day figcaption { font-size: 12px; text-align: center; }
+.pr-day figcaption b { font-weight: 600; }
+/* « Suivre la journée » coupé : la courbe passe en pointillés */
+.pr-day:not(.is-active) .pr-day-chart > svg path:last-child { stroke-dasharray: 3 4; }
+.pr-sp-panel .pr-day-chart { height: 68px; }
+.pr-sp-panel .pr-day-chart > svg { height: 38px; }
+.pr-sp-panel .pr-day-slots { height: 28px; }
+
+/* Pomodoro : anneau autour de l'orbe + compteur discret */
+.pr-l-ring { position: absolute; inset: 0; pointer-events: none; color: var(--pr-ink); }
+.pr-l-ring circle { transition: stroke-dashoffset 0.5s linear; }
+
+/* ligne Pomodoro du panneau : interrupteur, puis compteur juste dessous */
+.pr-pomo { display: grid; gap: 12px; }
+.pr-pomo-hint { font-size: 12px; font-weight: 300; line-height: 1.4; }
+.pr-pomo-count { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 2px 12px; }
+.pr-pomo-time { font-size: 34px; font-weight: 300; letter-spacing: 0.03em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.pr-pomo-phase { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.pr-pomo-bar { grid-column: 1 / -1; height: 6.5px; border: 1px solid var(--pr-line); }
+.pr-pomo-bar i { display: block; height: 100%; background: var(--pr-ink); transition: width 0.5s linear; }
+
+/* liens : trois lignes, les unes sous les autres */
+.pr-l-links { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.pr-l-links .pr-l-link {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: none; border: 0; padding: 5px 0; color: var(--pr-ink);
+  font: inherit; font-size: 16px; text-decoration: none; cursor: pointer; white-space: nowrap;
+}
+.pr-l-links .pr-l-link > svg { flex: none; }
+.pr-l-links .pr-l-link:hover, .pr-l-links .pr-l-link:focus-visible { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; outline: none; }
+
+/* fenêtre « version maniaque » */
+.pr-l-modal {
+  position: fixed; inset: 0; z-index: 20;
+  display: grid; place-items: center; padding: 20px;
+  background: rgba(0, 0, 0, 0.88);
+  animation: pr-fade 0.25s ease both;
+}
+.pr-l-modal-box {
+  width: min(400px, 100%);
+  display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;
+  padding: 28px 24px; border: 1px solid var(--pr-line); border-radius: 16px; background: var(--pr-bg);
+}
+.pr-l-modal-box p { margin: 0; font-weight: 300; line-height: 1.55; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-l-switch-track, .pr-l-switch-track::after, .pr-l-orb canvas, .pr-day-slot { transition: none; }
+  .pr-l-modal { animation: none; }
+}

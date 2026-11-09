@@ -1,0 +1,95 @@
+/* Pad « Ajuster le son » — panneau plein écran par-dessus l'écoute. */
+
+.pr-pad-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow-y: auto;
+  background: var(--pr-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px var(--pr-gutter) 28px;
+  animation: pr-fade 0.4s ease both;
+}
+
+.pr-pad-head { text-align: center; max-width: 360px; display: grid; gap: 6px; }
+.pr-pad-head .pr-title { font-size: 21px; }
+
+.pr-pad-orb { display: flex; justify-content: center; }
+
+.pr-pad {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 28px;
+  overflow: visible;            /* le palet peut déborder des bords */
+  box-sizing: content-box;
+  border: 0;                    /* aucun cadre : le pad se fond dans le panneau */
+  touch-action: none;           /* le geste ne fait pas défiler la page */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.pr-pad:active { cursor: grabbing; }
+.pr-pad:focus-visible { outline: 1px solid var(--pr-line); outline-offset: 4px; }
+.pr-pad > canvas {
+  border-radius: 28px;
+  /* les bords du motif s'estompent : pas de carré visible là où le dessin s'arrête */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent), linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+}
+
+.pr-pad-label {
+  position: absolute;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pr-ink);
+  font-weight: 600;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.pr-pad-label--top { top: 14px; left: 50%; transform: translateX(-50%); }
+.pr-pad-label--bottom { bottom: 14px; left: 50%; transform: translateX(-50%); }
+.pr-pad-label--left { left: 14px; top: 50%; transform: translate(-50%, -50%) rotate(-90deg) translateY(50%); transform-origin: center; }
+.pr-pad-label--right { right: 14px; top: 50%; transform: translate(50%, -50%) rotate(90deg) translateY(50%); transform-origin: center; }
+
+/* le palet : un gros point blanc */
+.pr-pad-puck {
+  position: absolute; left: 0; top: 0;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #fff;
+  pointer-events: none;
+  box-shadow: 0 0 0 3px #000, 0 0 0 4px #fff;
+  transition: transform 0.06s linear;
+  will-change: transform;
+}
+
+.pr-pad-tip { text-align: center; }
+
+.pr-pad-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--pr-line);
+  background: transparent;
+  color: var(--pr-ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.pr-pad-close:hover, .pr-pad-close:focus-visible { background: var(--pr-ink); color: var(--pr-bg); outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-pad-sheet { animation: none; }
+  .pr-pad-puck { transition: none; }
+}
+
+/* pad intégré à l'écoute */
+.pr-pad-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.pr-pad-wrap .pr-pad-tip { max-width: 340px; font-size: 13px; }
+.pr-pad-wrap .pr-pad-tip:empty { display: none; }

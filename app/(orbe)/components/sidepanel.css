@@ -1,0 +1,65 @@
+/* Panneau latéral : à gauche ou à droite, ouvert ou replié. Noir et blanc, filets pleins. */
+
+.pr-sp {
+  position: relative;
+  height: 100dvh; overflow: hidden;
+  display: flex; flex-direction: row;
+  animation: pr-fade 0.6s ease both;
+}
+.pr-sp[data-side='right'] { flex-direction: row-reverse; }
+
+.pr-sp-panel {
+  flex: none; width: 380px; height: 100%; overflow: hidden;
+  transition: width 0.35s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.pr-sp[data-open='false'] .pr-sp-panel { width: 0; }
+.pr-sp-inner {
+  height: 100%; display: flex; flex-direction: column;
+  border-right: 1px solid var(--pr-rule);
+}
+.pr-sp[data-side='right'] .pr-sp-inner { border-right: 0; border-left: 1px solid var(--pr-rule); }
+
+.pr-sp-body {
+  flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 0;
+  padding: 24px 32px 20px;
+  scrollbar-width: thin; scrollbar-color: #fff #000;
+}
+.pr-sp-foot {
+  flex: none; display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 32px 16px; border-top: 1px solid var(--pr-rule);
+}
+.pr-sp-btn {
+  width: 36px; height: 36px; display: grid; place-items: center;
+  border: 1px solid var(--pr-line); border-radius: 50%;
+  background: var(--pr-bg); color: var(--pr-ink); cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.pr-sp-btn:hover, .pr-sp-btn:focus-visible { background: var(--pr-ink); color: var(--pr-bg); outline: none; }
+
+.pr-sp-main {
+  flex: 1; height: 100%; min-width: 0; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: 20px 32px;
+}
+
+/* languette qui rouvre le panneau, collée au bord de son côté */
+.pr-sp-tab {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 56px; display: grid; place-items: center;
+  border: 1px solid var(--pr-line); background: var(--pr-bg); color: var(--pr-ink); cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s 0.2s, background 0.15s, color 0.15s;
+}
+.pr-sp[data-side='left'] .pr-sp-tab { left: 0; border-left: 0; border-radius: 0 10px 10px 0; }
+.pr-sp[data-side='right'] .pr-sp-tab { right: 0; border-right: 0; border-radius: 10px 0 0 10px; }
+.pr-sp[data-open='false'] .pr-sp-tab { opacity: 1; pointer-events: auto; }
+.pr-sp-tab:hover, .pr-sp-tab:focus-visible { background: var(--pr-ink); color: var(--pr-bg); outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-sp, .pr-sp-panel, .pr-sp-tab { animation: none; transition: none; }
+}
+
+/* fenêtre basse : le panneau défile, rien n'est retiré */
+@media (max-height: 790px) {
+  .pr-sp-body { padding-top: 20px; }
+}

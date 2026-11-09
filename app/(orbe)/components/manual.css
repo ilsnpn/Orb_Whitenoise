@@ -1,0 +1,20 @@
+/* Version maniaque : mêmes jetons que le reste (noir pur, blanc pur). */
+
+.pr-m { display: flex; flex-direction: column; gap: 22px; }
+.pr-m-narrow .pr-m { padding-bottom: 24px; }
+.pr-m-head { display: grid; gap: 10px; }
+.pr-m-head .pr-title { font-size: 22px; }
+.pr-m-back {
+  justify-self: start; display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 0; color: var(--pr-ink); font: inherit; font-size: 14px; cursor: pointer;
+}
+.pr-m-back:hover, .pr-m-back:focus-visible { text-decoration: underline; text-underline-offset: 4px; outline: none; }
+
+.pr-m-sec { display: grid; gap: 14px; padding-top: 16px; border-top: 1px solid var(--pr-rule); }
+
+/* curseurs */
+.pr-m-field { display: grid; gap: 6px; }
+.pr-m-field-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.pr-m-field-head b { font-weight: 600; text-align: right; }
+.pr-m-hint { font-size: 12px; font-weight: 300; line-height: 1.4; }
+.pr-m-hints { justify-self: start; font-size: 13px; }

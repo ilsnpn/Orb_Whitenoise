@@ -1,0 +1,14 @@
+node_modules/
+.next/
+next-env.d.ts
+tsconfig.tsbuildinfo
+.env*
+.vercel/
+
+# Matériel d'analyse et de recherche (hors dépôt) : décompilation de l'APK Endel, captures,
+# enregistrement d'écran, notes de reverse engineering. Rien d'Endel n'est redistribué.
+_re/
+_research/
+*.mp4
+ANALYSIS.md
+TECHNICAL-PLAN.md
