@@ -3,8 +3,8 @@
 // L'orbe centrale (clic = lecture / pause, sans bouton : en pause elle est à 50 % d'opacité, en lecture pleinement blanche ; anneau du Pomodoro autour) et la ligne
 // Pomodoro du panneau (interrupteur + compteur). Partagées par l'écoute et la version maniaque.
 import { useSound } from '@/lib/prelude/soundscape-context';
-import { fmtLeft, type Pomodoro } from '@/lib/prelude/use-pomodoro';
-import { IconTimer } from './icons';
+import { fmtLeft, RHYTHMS, type Pomodoro, type Rhythm } from '@/lib/prelude/use-pomodoro';
+import { GlyphPause, GlyphPlay, IconTimer } from './icons';
 import { SoundOrb } from './SoundOrb';
 import './listen.css';
 
@@ -18,6 +18,11 @@ export function Stage({ px, pomodoro: p }: { px: number; pomodoro: Pomodoro }) {
       <button type="button" className="pr-l-orb" onClick={s.toggle} data-playing={s.playing}
         aria-label={s.playing ? 'Mettre en pause' : 'Écouter'} aria-pressed={s.playing}>
         <SoundOrb px={px} />
+        {/* au survol, l'état sort de l'ombre au centre : lecture si en pause, pause si ça joue */}
+        <span className="pr-l-orb-glyph" aria-hidden="true">
+          {s.playing ? <GlyphPause size={Math.round(Math.max(36, Math.min(px * 0.09, 72)))} />
+            : <GlyphPlay size={Math.round(Math.max(36, Math.min(px * 0.09, 72)))} />}
+        </span>
         {p.running ? (
           <svg className="pr-l-ring" width={px} height={px} aria-hidden="true">
             <circle cx={px / 2} cy={px / 2} r={R} fill="none" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1.5" />
@@ -45,6 +50,14 @@ export function PomoRow({ pomodoro: p }: { pomodoro: Pomodoro }) {
         <input type="checkbox" role="switch" checked={p.running} onChange={(e) => toggle(e.target.checked)} />
         <span className="pr-l-switch-track" aria-hidden="true" />
       </label>
+      <div className="pr-pomo-rhythm" role="radiogroup" aria-label="Rythme">
+        {(Object.keys(RHYTHMS) as Rhythm[]).map((k) => (
+          <button key={k} type="button" role="radio" aria-checked={p.rhythm === k}
+            onClick={() => p.setRhythm(k)}>
+            {RHYTHMS[k].work}<span aria-hidden="true"> · </span><span className="pr-sr">min de travail, </span>{RHYTHMS[k].rest}<span className="pr-sr"> min de pause</span>
+          </button>
+        ))}
+      </div>
       {p.running ? (
         <div className="pr-pomo-count" aria-live="polite">
           <span className="pr-pomo-time">{fmtLeft(p.left)}</span>

@@ -230,7 +230,14 @@ export class SoundscapeEngine {
     this.mode = MODES[name];
     this.chordIndex = 0;
     this.lastMelody = -1;
-    if (this.ctx && this.running) this.changeChord(this.ctx.currentTime + 0.1);
+    if (this.ctx && this.running) {
+      // transition audible : le son plonge, la nouvelle ambiance entre au creux, puis il remonte
+      const t = this.ctx.currentTime, g = this.master.gain;
+      g.cancelScheduledValues(t);
+      g.setTargetAtTime(this.volume * 0.08, t, 0.25);
+      g.setTargetAtTime(this.volume, t + 1.1, 0.7);
+      this.changeChord(t + 0.9);
+    }
   }
 
   private stepMorph() {

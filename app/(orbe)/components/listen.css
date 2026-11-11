@@ -25,10 +25,21 @@
   background: none; border: 0; padding: 0; color: inherit; cursor: pointer; border-radius: 50%;
 }
 .pr-l-orb:focus-visible { outline: 2px solid var(--pr-line); outline-offset: -8px; }
-/* lecture : l'orbe est pleinement blanche ; en pause, c'est le seul élément grisé (50 % de transparence) */
-.pr-l-orb canvas { transition: opacity 0.45s ease; }
-.pr-l-orb[data-playing='false'] canvas { opacity: 0.5; }
-.pr-l-orb[data-playing='false']:hover canvas { opacity: 0.7; }
+/* lecture : l'orbe est pleinement blanche ; en pause, elle s'efface nettement */
+.pr-l-orb canvas { transition: opacity 0.6s ease; }
+.pr-l-orb[data-playing='false'] canvas { opacity: 0.2; }
+.pr-l-orb[data-playing='false']:hover canvas { opacity: 0.32; }
+/* glyphe lecture / pause au centre : il sort de l'ombre au survol (et reste deviné en pause) */
+.pr-l-orb-glyph {
+  position: absolute; left: 50%; top: 50%; display: grid; place-items: center;
+  pointer-events: none; color: var(--pr-ink);
+  opacity: 0; filter: blur(8px); transform: translate(-50%, -50%) scale(0.85);
+  transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+}
+.pr-l-orb[data-playing='false'] .pr-l-orb-glyph { opacity: 0.35; filter: blur(2px); transform: translate(-50%, -50%) scale(0.95); }
+.pr-l-orb:hover .pr-l-orb-glyph, .pr-l-orb:focus-visible .pr-l-orb-glyph {
+  opacity: 0.9; filter: blur(0); transform: translate(-50%, -50%) scale(1);
+}
 
 .pr-l-row { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; font-size: 14px; }
 .pr-l-row input[type='range'], .pr-m-field input[type='range'] { width: 100%; accent-color: #fff; }
@@ -85,6 +96,16 @@
 
 /* ligne Pomodoro du panneau : interrupteur, puis compteur juste dessous */
 .pr-pomo { display: grid; gap: 12px; }
+.pr-pomo-rhythm { display: flex; gap: 6px; padding-left: 34px; }
+.pr-pomo-rhythm button {
+  background: none; border: 1px solid var(--pr-line); border-radius: 999px; padding: 4px 12px;
+  color: var(--pr-ink); font: inherit; font-size: 13px; font-weight: 300; font-variant-numeric: tabular-nums;
+  opacity: 0.55; cursor: pointer; transition: opacity 0.2s, border-color 0.2s;
+}
+.pr-pomo-rhythm button:hover { opacity: 0.85; }
+.pr-pomo-rhythm button[aria-checked="true"] { opacity: 1; border-color: var(--pr-ink); }
+.pr-pomo-rhythm button:focus-visible { outline: 2px solid var(--pr-ink); outline-offset: 2px; }
+.pr-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .pr-pomo-hint { font-size: 12px; font-weight: 300; line-height: 1.4; }
 .pr-pomo-count { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 2px 12px; }
 .pr-pomo-time { font-size: 34px; font-weight: 300; letter-spacing: 0.03em; font-variant-numeric: tabular-nums; line-height: 1.1; }
@@ -117,6 +138,6 @@
 .pr-l-modal-box p { margin: 0; font-weight: 300; line-height: 1.55; }
 
 @media (prefers-reduced-motion: reduce) {
-  .pr-l-switch-track, .pr-l-switch-track::after, .pr-l-orb canvas, .pr-day-slot { transition: none; }
+  .pr-l-switch-track, .pr-l-switch-track::after, .pr-l-orb canvas, .pr-l-orb-glyph, .pr-day-slot { transition: none; }
   .pr-l-modal { animation: none; }
 }

@@ -47,7 +47,13 @@ const hourGap = (a: number, b: number) => { const d = Math.abs(a - b) % 24; retu
 export default function Prelude() {
   const s = useSound();
   const vp = useViewport();
-  const pomo = usePomodoro();
+  // Pomodoro : la musique se coupe à la fin du travail et revient à la fin de la pause
+  const sRef = useRef(s);
+  sRef.current = s;
+  const pomo = usePomodoro((next) => {
+    const cur = sRef.current;
+    if ((next === 'break') === cur.playing) void cur.toggle();
+  });
   const [phase, setPhase] = useState<Phase>({ k: 'boot' });
   const [pads, setPads] = useState<Record<ModeName, PadPos>>({ focus: CENTER, relax: CENTER, sleep: CENTER });
   const noise = useRef<NoiseKind | undefined>(undefined);
